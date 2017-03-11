@@ -1,476 +1,454 @@
 <!doctype html>
 <html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WebAssembly</title>
 
-	<title>WebAssembly</title>
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black.css">
 
-	<link rel="stylesheet" href="css/reveal.css">
-	<link rel="stylesheet" href="css/theme/black.css">
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
 
-	<!-- Theme used for syntax highlighting of code -->
-	<link rel="stylesheet" href="lib/css/zenburn.css">
-
-	<!-- Printing and PDF exports -->
-	<script>
-		var link = document.createElement('link');
-		link.rel = 'stylesheet';
-		link.type = 'text/css';
-		link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
-		document.getElementsByTagName('head')[0].appendChild(link);
-	</script>
-</head>
-
-<body>
-	<div class="reveal">
-		<div class="slides">
-			<section>
-				<h1>WebAssembly</h1>
-				<p style="text-align: right;">By <a href="mailto:int64ago@gmail.com">Cody</a></p>
-				<p style="text-align: right;">23/09/2016</p>
-			</section>
-			<section>
-				<h2>C/C++ Vs JavaScript</h2>
-				<section>
-					<p>
-						<b>C/C++: </b> Preprocessor > Compiler > Assembler > Linker
-					</p>
-				</section>
-				<section>
-					<p>
-						<b>JavaScript: </b> Lexer > Parser > Translator > Interpreter
-					</p>
-				</section>
-			</section>
-			<section>
-				<h2>Things that slow down JavaScript</h2>
-				<ul>
-					<li>Boxing</li>
-					<li>Automated garbage collection</li>
-					<li>JIT compilation and runtime type checks</li>
-					<li>Flexible memory layout</li>
-				</ul>
-			</section>
-			<section>
-				<section>
-					<h2>How about ignoring these steps ?</h2>
-				</section>
-				<section>
-					<h2>Yes! AOT compilation!</h2>
-					<h2 class="fragment" data-fragment-index="0" style="color: #ff2c2d;">BUT! How?</h2>
-				</section>
-			</section>
-			<section>
-				<h2>Here comes <span style="color: green;">asm.js</span></h2>
-				<section></section>
-				<section>
-					<p>
-						An extraordinarily optimizable, low-level <span class="fragment highlight-red" data-fragment-index="0">subset</span>						of JavaScript.
-					</p>
-				</section>
-			</section>
-			<section>
-				<h2>Game / Video / Image decoders</h2>
-				<img src="https://cdn.int64ago.org/kt86n0fed6wx3gadobt9.PNG" alt="" />
-			</section>
-			<section>
-				<h2>Works to make Web run like Native</h2>
-				<section>
-					<ul>
-						<li>NPAPI(1995-2015) - PDF documents</li>
-						<li>ActiveX(1996-2015) - Document embedding</li>
-						<li>Shockwave/Flash(1996-?) - Animations</li>
-						<li>Java Applets(1996-?) - Applications</li>
-						<li>JavaScript performance wars(2008)</li>
-						<li>Native Client / Portable Native Client(2008/2013)</li>
-						<li>Emscripten / asm.js(2010/2013)</li>
-						<li>WebAssmbly(2015)</li>
-					</ul>
-				</section>
-				<section>
-					<img src="https://cdn.int64ago.org/v19qzjshttpc00wawtgldi.PNG" alt="" />
-				</section>
-			</section>
-			<section>
-				<h2>DEMO...</h2>
-				<pre><code class="hljs" data-trim>
-function DiagModule(stdlib) {
-  "use asm";
-  var sqrt = stdlib.Math.sqrt;
-  function square(x) {
-    x = +x;
-    return +(x*x);
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <h1>WebAssembly</h1>
+          <p style="text-align: right;">By <a href="mailto:int64ago@gmail.com">Cody</a></p>
+          <p style="text-align: right;">23/09/2016</p>
+        </section>
+        <section>
+          <h2>C/C++ Vs JavaScript</h2>
+          <section>
+            <p>
+              <b>C/C++: </b> Preprocessor > Compiler > Assembler > Linker
+            </p>        
+          </section>
+          <section>
+            <p>
+              <b>JavaScript: </b> Lexer > Parser > Translator > Interpreter
+            </p>
+          </section>
+        </section>
+        <section>
+          <h2>Things that slow down JavaScript</h2>
+          <ul>
+            <li>Boxing</li>
+            <li>Automated garbage collection</li>
+            <li>JIT compilation and runtime type checks</li>
+            <li>Flexible memory layout</li>
+          </ul>
+        </section>
+        <section>
+          <section>
+            <h2>How about ignoring these steps ?</h2>
+          </section>
+          <section>
+            <h2>Yes! AOT compilation!</h2>
+            <h2 class="fragment" data-fragment-index="0" style="color: #ff2c2d;">BUT! How?</h2>
+          </section>
+        </section>
+        <section>
+          <h2>Here comes <span style="color: green;">asm.js</span></h2>
+          <section></section>
+          <section>
+            <p>
+              An extraordinarily optimizable, low-level <span class="fragment highlight-red" data-fragment-index="0">subset</span> of JavaScript.
+            </p>
+          </section>
+        </section>
+        <section>
+          <h2>Game / Video / Image decoders</h2>
+          <img src="https://cdn.int64ago.org/kt86n0fed6wx3gadobt9.PNG" alt="" />
+        </section>
+        <section>
+          <h2>Works to make Web run like Native</h2>
+          <section>
+            <ul>
+              <li>NPAPI(1995-2015) - PDF documents</li>
+              <li>ActiveX(1996-2015) - Document embedding</li>
+              <li>Shockwave/Flash(1996-?) - Animations</li>
+              <li>Java Applets(1996-?) - Applications</li>
+              <li>JavaScript performance wars(2008)</li>
+              <li>Native Client / Portable Native Client(2008/2013)</li>
+              <li>Emscripten / asm.js(2010/2013)</li>
+              <li>WebAssmbly(2015)</li>
+            </ul>
+          </section>
+          <section>
+            <img src="https://cdn.int64ago.org/v19qzjshttpc00wawtgldi.PNG" alt="" />
+          </section>
+        </section>
+        <section>
+          <h2>DEMO...</h2>
+          <pre><code class="hljs" data-trim>
+  function DiagModule(stdlib) {
+    "use asm";
+    var sqrt = stdlib.Math.sqrt;
+    function square(x) {
+      x = +x;
+      return +(x*x);
+    }
+    function diag(x, y) {
+      x = +x;
+      y = +y;
+      return +sqrt(square(x) + square(y));
+    }
+    return { diag: diag };
   }
-  function diag(x, y) {
-    x = +x;
-    y = +y;
-    return +sqrt(square(x) + square(y));
-  }
-  return { diag: diag };
-}
-        </code></pre>
-				<pre class="fragment" data-fragment-index="0"><code class="hljs" data-trim>
-// Browsers: this === window
-var fast = DiagModule(this);   // link the module
-console.log(fast.diag(3, 4));  // 5
-        </code></pre>
-			</section>
-			<section>
-				<section>
-					<h2>Module structure</h2>
-					<pre><code class="hljs" data-trim>
-function MyAsmModule(stdlib, foreign, heap) {
-  "use asm";  // marks this function as an asm.js module
-  // module body:
-  function f1(...) { ... }
-  function f2(...) { ... }
-  // ...
-  return {
-    export1: f1,
-    export2: f2,
+          </code></pre>
+          <pre class="fragment" data-fragment-index="0"><code class="hljs" data-trim>
+  // Browsers: this === window
+  var fast = DiagModule(this);   // link the module
+  console.log(fast.diag(3, 4));  // 5
+          </code></pre>
+        </section>
+        <section>
+          <section>
+            <h2>Module structure</h2>
+            <pre><code class="hljs" data-trim>
+  function MyAsmModule(stdlib, foreign, heap) {
+    "use asm";  // marks this function as an asm.js module
+    // module body:
+    function f1(...) { ... }
+    function f2(...) { ... }
     // ...
-  };
-}
-          </code></pre>
-					<div>
-						<p style="text-align: left;"><small>stdlib: a standard library object, providing access to (a subset of) the standard library.</small></p>
-						<p style="text-align: left;"><small>foreign: a foreign function interface (FFI) providing access to arbitrary external JavaScript functions.</small></p>
-						<p style="text-align: left;"><small>heap: a heap buffer, an instance of ArrayBuffer that acts as the asm.js heap.</small></p>
-					</div>
-				</section>
-				<section>
-					<h2>Standard library</h2>
-					<ul>
-						<li>Global double values: Infinity, NaN</li>
-						<li>Double functions: Math.ceil, Math.floor, Math.sqrt ...</li>
-						<li>Integer or double function: Math.abs ...</li>
-						<li>Integer function (ES6): Math.imul (integer multiplication)</li>
-						<li>Double values: Math.E, Math.LOG2E, Math.PI ...</li>
-					</ul>
-				</section>
-				<section>
-					<h2>Static typing</h2>
-					<p style="text-align: left;">Via its initializer</p>
-					<pre><code class="hljs" data-trim>
-var a = 0;    // a has type int
-var b = 0.0;  // b has type double
-          </code></pre>
-					<p style="text-align: left;">Via type annotations</p>
-					<pre><code class="hljs" data-trim>
-function foo(x, y) {
-  var x = x|0;   // x has type int
-  var y = +y;    // y has type double
-  return +(x * y);   // function returns a double
-}
-          </code></pre>
-				</section>
-			</section>
-			<section>
-				<section>
-					<h2>Advantages of asm.js</h2>
-					<ul>
-						<li>Interacts well with JavaScript (not like NaCl/PNaCl)</li>
-						<li>Backward compatible with all existing JavaScript engines</li>
-					</ul>
-				</section>
-				<section>
-					<h2>But it's impossible for <span style="color: #ff2c2d;">hand writing</span> in complex projects</h2>
-					<p class="fragment" data-fragment-index="0">In the real world, it's like this:</p>
-					<img class="fragment" data-fragment-index="1" src="https://cdn.int64ago.org/c5l2ugfrxq3r2n5ypffxbt9.PNG" alt="" />
-					<p class="fragment" data-fragment-index="2" style="color: yellow;">Tips: Emscripten does all these.</p>
-				</section>
-				<section>
-					<h2>Example...</h2>
-					<p></p>
-					<pre><code class="hljs c" data-trim>
-#include &lt;stdio.h&gt;
-int fib(int x) {
-  if (x < 2) {
-    return 1;
-  } else {
-    return fib(x - 1) + fib(x - 2);
+    return {
+      export1: f1,
+      export2: f2,
+      // ...
+    };
   }
-}
-int main() {
-  int result = fib(45);
-  printf("%d\n", result);
-  return 1;
-}
-          </code></pre>
-					<pre><code class="hljs bash" data-trim>
-./emcc -O1 -s ASM_JS=1 ./hello_world.cpp
-          </code></pre>
-					<pre><code class="hljs bash" data-trim>
-node ./a.out.js
-          </code></pre>
-				</section>
-				<section>
-					<img src="https://cdn.int64ago.org/m0l6u2k6sof72xuyc6gk3xr.png" alt="" />
-				</section>
-				<section>
-					<img src="https://cdn.int64ago.org/4xhm93985edb8y9891nstt9.png" alt="" />
-				</section>
-				<section>
-					<h2>Build emscripten by self...</h2>
-					<img src="https://cdn.int64ago.org/0hgkwcf0bu864u1llt0529.png" alt="" />
-				</section>
-			</section>
-			<section>
-				<h2>Can I use</h2>
-				<img src="https://cdn.int64ago.org/7zim1hkxu3edwegcn0fi529.PNG" alt="" />
-			</section>
-			<section>
-				<h2 style="margin-bottom: 20px;">Languages to languages</h2>
-				<section>
-					<p>CoffeeScript</p>
-					<pre><code class="hljs coffeescript" data-trim>
-divisible = 3
-
-divisibleReporter = (lastFound, nextDivisible) ->
-  "Found: #{lastFound}, Next: #{nextDivisible}"
-
-divisibleKeeper = ((divisible) ->
-  lastFound = 0
-  nextDivisible = divisible
-  (number) ->
-    if (number >= nextDivisible) 
-      nextDivisible = (Math.floor(number/divisible) + 1) * divisible
-      lastFound = Math.floor(number/divisible) * divisible
-      console.log divisibleReporter(lastFound, nextDivisible)
-  )(divisible);
-
-for n in [1..100]
-  divisibleKeeper(n)
-          </code></pre>
-				</section>
-				<section>
-					<p>TypeScript</p>
-					<pre><code class="hljs typescript" data-trim>
-var divisible = 3;
-
-var divisibleReporter = function(lastFound:number, nextDivisible:number){
-  return "Found: " + lastFound + ", Next: " + nextDivisible;
-};
-
-var divisibleKeeper = (function(divisible:number) {
-  var lastFound = 0;
-  var nextDivisible = divisible;
-  return function(number:number) {
-    if (number >= nextDivisible) {
-      nextDivisible = (Math.floor(number / divisible) + 1) * divisible;
-      lastFound = Math.floor(number / divisible) * divisible;
-      console.log(divisibleReporter(lastFound, nextDivisible));
+            </code></pre>
+            <div>
+              <p style="text-align: left;"><small>stdlib: a standard library object, providing access to (a subset of) the standard library.</small></p>
+              <p style="text-align: left;"><small>foreign: a foreign function interface (FFI) providing access to arbitrary external JavaScript functions.</small></p>
+              <p style="text-align: left;"><small>heap: a heap buffer, an instance of ArrayBuffer that acts as the asm.js heap.</small></p>
+            </div>
+          </section>
+          <section>
+            <h2>Standard library</h2>
+            <ul>
+              <li>Global double values: Infinity, NaN</li>
+              <li>Double functions: Math.ceil, Math.floor, Math.sqrt ...</li>
+              <li>Integer or double function: Math.abs ...</li>
+              <li>Integer function (ES6): Math.imul (integer multiplication)</li>
+              <li>Double values: Math.E, Math.LOG2E, Math.PI ...</li>
+            </ul>
+          </section>
+          <section>
+            <h2>Static typing</h2>
+            <p style="text-align: left;">Via its initializer</p>
+            <pre><code class="hljs" data-trim>
+  var a = 0;    // a has type int
+  var b = 0.0;  // b has type double
+            </code></pre>
+            <p style="text-align: left;">Via type annotations</p>
+            <pre><code class="hljs" data-trim>
+  function foo(x, y) {
+    var x = x|0;   // x has type int
+    var y = +y;    // y has type double
+    return +(x * y);   // function returns a double
+  }
+            </code></pre>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h2>Advantages of asm.js</h2>
+            <ul>
+              <li>Interacts well with JavaScript (not like NaCl/PNaCl)</li>
+              <li>Backward compatible with all existing JavaScript engines</li>
+            </ul>
+          </section>
+          <section>
+            <h2>But it's impossible for <span style="color: #ff2c2d;">hand writing</span> in complex projects</h2>
+            <p class="fragment" data-fragment-index="0">In the real world, it's like this:</p>
+            <img class="fragment" data-fragment-index="1" src="https://cdn.int64ago.org/c5l2ugfrxq3r2n5ypffxbt9.PNG" alt="" />
+            <p class="fragment" data-fragment-index="2" style="color: yellow;">Tips: Emscripten does all these.</p>
+          </section>
+          <section>
+            <h2>Example...</h2>
+            <p></p>
+            <pre><code class="hljs c" data-trim>
+  #include &lt;stdio.h&gt;
+  int fib(int x) {
+    if (x < 2) {
+      return 1;
+    } else {
+      return fib(x - 1) + fib(x - 2);
     }
+  }
+  int main() {
+    int result = fib(45);
+    printf("%d\n", result);
+    return 1;
+  }
+            </code></pre>
+            <pre><code class="hljs bash" data-trim>
+  ./emcc -O1 -s ASM_JS=1 ./hello_world.cpp
+            </code></pre>
+            <pre><code class="hljs bash" data-trim>
+  node ./a.out.js
+            </code></pre>
+          </section>
+          <section>
+            <img src="https://cdn.int64ago.org/m0l6u2k6sof72xuyc6gk3xr.png" alt="" />
+          </section>
+          <section>
+            <img src="https://cdn.int64ago.org/4xhm93985edb8y9891nstt9.png" alt="" />
+          </section>
+          <section>
+            <h2>Build emscripten by self...</h2>
+            <img src="https://cdn.int64ago.org/0hgkwcf0bu864u1llt0529.png" alt="" />
+          </section>
+        </section>
+        <section>
+          <h2>Can I use</h2>
+          <img src="https://cdn.int64ago.org/7zim1hkxu3edwegcn0fi529.PNG" alt="" />
+        </section>
+        <section>
+          <h2 style="margin-bottom: 20px;">Languages to languages</h2>
+          <section>
+            <p>CoffeeScript</p>
+            <pre><code class="hljs coffeescript" data-trim>
+  divisible = 3
+
+  divisibleReporter = (lastFound, nextDivisible) ->
+    "Found: #{lastFound}, Next: #{nextDivisible}"
+
+  divisibleKeeper = ((divisible) ->
+    lastFound = 0
+    nextDivisible = divisible
+    (number) ->
+      if (number >= nextDivisible) 
+        nextDivisible = (Math.floor(number/divisible) + 1) * divisible
+        lastFound = Math.floor(number/divisible) * divisible
+        console.log divisibleReporter(lastFound, nextDivisible)
+    )(divisible);
+
+  for n in [1..100]
+    divisibleKeeper(n)
+            </code></pre>
+          </section>
+          <section>
+            <p>TypeScript</p>
+            <pre><code class="hljs typescript" data-trim>
+  var divisible = 3;
+
+  var divisibleReporter = function(lastFound:number, nextDivisible:number){
+    return "Found: " + lastFound + ", Next: " + nextDivisible;
   };
-})(divisible);
 
-for (var i = 1; i <= 100; ++i) {
-  divisibleKeeper(i);
-}
-          </code></pre>
-				</section>
-				<section>
-					<p>Dart</p>
-					<pre><code class="hljs dart" data-trim>
-int divisible = 3;
+  var divisibleKeeper = (function(divisible:number) {
+    var lastFound = 0;
+    var nextDivisible = divisible;
+    return function(number:number) {
+      if (number >= nextDivisible) {
+        nextDivisible = (Math.floor(number / divisible) + 1) * divisible;
+        lastFound = Math.floor(number / divisible) * divisible;
+        console.log(divisibleReporter(lastFound, nextDivisible));
+      }
+    };
+  })(divisible);
 
-String divisibleReporter(int lastFound, int nextDivisible) => "Found: ${lastFound}, Next: ${nextDivisible}";
-
-var divisibleKeeper = ((int divisible) {
-  int lastFound = 0;
-  int nextDivisible = divisible;
-  return (int number){
-    if (number >= nextDivisible) {
-      nextDivisible = ((number/divisible).floor() + 1) * divisible;
-      lastFound = (number/divisible).floor() * divisible;
-      print(divisibleReporter(lastFound, nextDivisible));
-    }
-  };  
-})(divisible);
-
-void main() {  
-  for (var i = 0; i < 100; i++) {
+  for (var i = 1; i <= 100; ++i) {
     divisibleKeeper(i);
   }
-}
-          </code></pre>
-				</section>
-				<section>
-					<p>GWT</p>
-					<pre><code class="hljs java" data-trim>
-public class ButtonExample implements EntryPoint {
+            </code></pre>
+          </section>
+          <section>
+            <p>Dart</p>
+            <pre><code class="hljs dart" data-trim>
+  int divisible = 3;
 
-  public void onModuleLoad() {
-    // Make a new button that does something when you click it.
-    Button b = new Button("Jump!", new ClickHandler() {
-      public void onClick(ClickEvent event) {
-        Window.alert("How high?");
+  String divisibleReporter(int lastFound, int nextDivisible) => "Found: ${lastFound}, Next: ${nextDivisible}";
+
+  var divisibleKeeper = ((int divisible) {
+    int lastFound = 0;
+    int nextDivisible = divisible;
+    return (int number){
+      if (number >= nextDivisible) {
+        nextDivisible = ((number/divisible).floor() + 1) * divisible;
+        lastFound = (number/divisible).floor() * divisible;
+        print(divisibleReporter(lastFound, nextDivisible));
       }
-    });
+    };  
+  })(divisible);
 
-    // Add it to the root panel.
-    RootPanel.get().add(b);
+  void main() {  
+    for (var i = 0; i < 100; i++) {
+      divisibleKeeper(i);
+    }
   }
-}
-          </code></pre>
-				</section>
-			</section>
-			<section>
-				<h2>Why asm.js is not enough?</h2>
-				<p class="fragment" data-fragment-index="0">Currently ONLY <span style="color: #ff2c2d;">Firefox</span> and <span style="color: #ff2c2d;">Edge</span> support this</p>
-				<p class="fragment" data-fragment-index="1">The asm.js is still JS, ONLY saving time during <span style="color: #ff2c2d;">interpretion</span></p>
-				<p class="fragment" data-fragment-index="2">Hard to <span style="color: #ff2c2d;">debug</span></p>
-			</section>
-			<section data-transition="slide" data-background="#4d7e65" data-background-transition="zoom">
-				<h1>WebAssembly</h1>
-				<blockquote class="fragment" data-fragment-index="0" cite="https://webassembly.github.io/">
-					WebAssembly or wasm is a new portable, <span style="color: yellow;">size- and load-time-efficient</span> format suitable
-					for compilation to the web.
-				</blockquote>
-				<p class="fragment" data-fragment-index="1">others said...</p>
-				<blockquote class="fragment" data-fragment-index="1">
-					WebAssembly is (roughly) a binary format for delivering asm.js code.
-				</blockquote>
-			</section>
-			<section data-background="#4d7e65">
-				<h2>Features</h2>
-				<ul>
-					<li>Efficient and fast</li>
-					<li>Safe</li>
-					<li>Open and debggable</li>
-					<li>Part of the open web platform</li>
-				</ul>
-				<img class="fragment" data-fragment-index="0" src="https://cdn.int64ago.org/qu4tbecbw33imk3dgkqpvi.PNG" alt="" />
-			</section>
-			<section data-background="#4d7e65">
-				<section>
-					<h2>WASM does not replace JS</h2>
-					<img src="https://cdn.int64ago.org/x820n5qp0rex762b7wuerk9.png" alt="" />
-				</section>
-				<section>
-					<img src="https://cdn.int64ago.org/qpebviaeczh96ee5klnmi.png" alt="" />
-				</section>
-				<section>
-					<h2>Text Format</h2>
-					<img src="https://cdn.int64ago.org/mxpp3rd3wuywntebokzkt9.PNG" alt="" />
-					<blockquote cite="https://github.com/WebAssembly/design/blob/master/TextFormat.md">
-						The text format is equivalent and isomorphic to the binary format.
-					</blockquote>
-				</section>
-				<section>
-					<h2>Binary Encoding</h2>
-					<img src="https://cdn.int64ago.org/9bvkbssnxrguyzttiysyvi.PNG" alt="" />
-				</section>
-			</section>
-			<section data-background="#4d7e65">
-				<h2><span style="color: #ff5c00;">C++</span> > <span style="color: #bb9950;">Emscripten</span> > <span style="color: #17ff2e;">asm.js</span></h2>
-				<h2><span style="color: #17ff2e;">asm.js</span> > <span style="color: #bb9950;">...</span> > <span style="color: #e94acf;">WebAssembly</span></h2>
-			</section>
-			<section data-background="#4d7e65">
-				<h2>Here comes Binaryen</h2>
-				<blockquote cite="https://github.com/WebAssembly/binaryen">
-					The Binaryen shell, which can load a WebAssembly module, <span style="color: #ff2c2d;">transform</span> it, <span style="color: #ff2c2d;">execute</span>					it in an interpreter,
-					<span style="color: #ff2c2d;">print</span> it, etc.
-				</blockquote>
-				<p>
-					Tool pack: asm2wasm / wasm2asm / s2wasm / wasm.js
-				</p>
-			</section>
-			<section data-transition="slide" data-background="#b5533c" data-background-transition="zoom">
-				<h1>The End</h1>
-				<h1>Thank you :-)</h1>
-			</section>
-			<section>
-				<h2>References</h2>
-				<ol style="font-size: 15px;">
-					<li><a href="http://www.2ality.com/2015/06/web-assembly.html">http://www.2ality.com/2015/06/web-assembly.html</a></li>
-					<li><a href="https://medium.com/javascript-scene/what-is-webassembly-the-dawn-of-a-new-era-61256ec5a8f6#.5t42aln7o">https://medium.com/javascript-scene/what-is-webassembly-the-dawn-of-a-new-era-61256ec5a8f6#.5t42aln7o</a></li>
-					<li><a href="https://medium.com/javascript-scene/why-we-need-webassembly-an-interview-with-brendan-eich-7fb2a60b0723#.7d4tbmm9e">https://medium.com/javascript-scene/why-we-need-webassembly-an-interview-with-brendan-eich-7fb2a60b0723#.7d4tbmm9e</a></li>
-					<li><a href="http://www.2ality.com/2013/02/asm-js.html">http://www.2ality.com/2013/02/asm-js.html</a></li>
-					<li><a href="http://www.html5rocks.com/en/tutorials/developertools/sourcemaps/">http://www.html5rocks.com/en/tutorials/developertools/sourcemaps/</a></li>
-					<li><a href="http://kripken.github.io/mloc_emscripten_talk">http://kripken.github.io/mloc_emscripten_talk</a></li>
-					<li><a href="http://llvm.org/">http://llvm.org/</a></li>
-					<li><a href="http://asmjs.org/spec/latest/">http://asmjs.org/spec/latest/</a></li>
-					<li><a href="http://asmjs.org/faq.html">http://asmjs.org/faq.html</a></li>
-					<li><a href="http://www.2ality.com/2013/02/asm-js.html">http://www.2ality.com/2013/02/asm-js.html</a></li>
-					<li><a href="http://kripken.github.io/emscripten-site/">http://kripken.github.io/emscripten-site/</a></li>
-					<li><a href="https://www.sitepoint.com/understanding-asm-js/">https://www.sitepoint.com/understanding-asm-js/</a></li>
-					<li><a href="https://news.ycombinator.com/item?id=9071235">https://news.ycombinator.com/item?id=9071235</a></li>
-					<li><a href="http://mrale.ph/blog/2013/03/28/why-asmjs-bothers-me.html">http://mrale.ph/blog/2013/03/28/why-asmjs-bothers-me.html</a></li>
-					<li><a href="http://jlongster.com/Compiling-LLJS-to-asm.js,-Now-Available-">http://jlongster.com/Compiling-LLJS-to-asm.js,-Now-Available-</a></li>
-					<li><a href="https://github.com/petkaantonov/bluebird/wiki/Optimization-killers">https://github.com/petkaantonov/bluebird/wiki/Optimization-killers</a></li>
-					<li><a href="https://hacks.mozilla.org/2015/12/compiling-to-webassembly-its-happening/">https://hacks.mozilla.org/2015/12/compiling-to-webassembly-its-happening/</a></li>
-					<li><a href="https://kripken.github.io/talks/wasm.html#/">https://kripken.github.io/talks/wasm.html#/</a></li>
-					<li><a href="https://hacks.mozilla.org/2016/03/a-webassembly-milestone/">https://hacks.mozilla.org/2016/03/a-webassembly-milestone/</a></li>
-					<li><a href="https://webkit.org/status/#specification-webassembly">https://webkit.org/status/#specification-webassembly</a></li>
-					<li><a href="https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#module-structure">https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#module-structure</a></li>
-					<li><a href="https://blog.mozilla.org/luke/2014/01/14/asm-js-aot-compilation-and-startup-performance/#jit">https://blog.mozilla.org/luke/2014/01/14/asm-js-aot-compilation-and-startup-performance/#jit</a></li>
-					<li><a href="https://en.wikipedia.org/wiki/Just-in-time_compilation">https://en.wikipedia.org/wiki/Just-in-time_compilation</a></li>
-					<li><a href="http://gotocon.com/dl/goto-cph-2015/slides/NickBray_WebAssembly.pdf">http://gotocon.com/dl/goto-cph-2015/slides/NickBray_WebAssembly.pdf</a></li>
-					<li><a href="https://cdn.int64ago.org/5d3l4mep2408zvvj66iggb9.pdf">https://cdn.int64ago.org/5d3l4mep2408zvvj66iggb9.pdf</a></li>
-					<li><a href="https://www.infoq.com/news/2015/06/webassembly-wasm">https://www.infoq.com/news/2015/06/webassembly-wasm</a></li>
-					<li><a href="http://128bitstudios.com/2013/08/11/a-quick-look-at-coffeescript-typescript-and-dart/">http://128bitstudios.com/2013/08/11/a-quick-look-at-coffeescript-typescript-and-dart/</a></li>
-				</ol>
-			</section>
-		</div>
-	</div>
+            </code></pre>
+          </section>
+          <section>
+            <p>GWT</p>
+            <pre><code class="hljs java" data-trim>
+  public class ButtonExample implements EntryPoint {
 
-	<script src="lib/js/head.min.js"></script>
-	<script src="js/reveal.js"></script>
+    public void onModuleLoad() {
+      // Make a new button that does something when you click it.
+      Button b = new Button("Jump!", new ClickHandler() {
+        public void onClick(ClickEvent event) {
+          Window.alert("How high?");
+        }
+      });
 
-	<script>
-		function getParameterByName(name, url) {
-			if (!url) url = window.location.href;
-			name = name.replace(/[\[\]]/g, '\\$&');
-			var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-				results = regex.exec(url);
-			if (!results) return null;
-			if (!results[2]) return '';
-			return decodeURIComponent(results[2].replace(/\+/g, ' '));
-		}
-		var role = getParameterByName('role');
-		role = role === 'master' ? role : 'client';
+      // Add it to the root panel.
+      RootPanel.get().add(b);
+    }
+  }
+            </code></pre>
+          </section>
+        </section>
+        <section>
+          <h2>Why asm.js is not enough?</h2>
+          <p class="fragment" data-fragment-index="0">Currently ONLY <span style="color: #ff2c2d;">Firefox</span> and <span style="color: #ff2c2d;">Edge</span> support this</p>
+          <p class="fragment" data-fragment-index="1">The asm.js is still JS, ONLY saving time during <span style="color: #ff2c2d;">interpretion</span></p>
+          <p class="fragment" data-fragment-index="2">Hard to <span style="color: #ff2c2d;">debug</span></p>
+        </section>
+        <section data-transition="slide" data-background="#4d7e65" data-background-transition="zoom">
+          <h1>WebAssembly</h1>
+          <blockquote class="fragment" data-fragment-index="0" cite="https://webassembly.github.io/">
+            WebAssembly or wasm is a new portable, <span style="color: yellow;">size- and load-time-efficient</span> format suitable for compilation to the web.
+          </blockquote>
+          <p class="fragment" data-fragment-index="1">others said...</p>
+          <blockquote class="fragment" data-fragment-index="1">
+            WebAssembly is (roughly) a binary format for delivering asm.js code. 
+          </blockquote>
+        </section>
+        <section data-background="#4d7e65">
+          <h2>Features</h2>
+          <ul>
+            <li>Efficient and fast</li>
+            <li>Safe</li>
+            <li>Open and debggable</li>
+            <li>Part of the open web platform</li>
+          </ul>
+          <img class="fragment" data-fragment-index="0" src="https://cdn.int64ago.org/qu4tbecbw33imk3dgkqpvi.PNG" alt="" />
+        </section>
+        <section data-background="#4d7e65">
+          <section>
+            <h2>WASM does not replace JS</h2>
+            <img src="https://cdn.int64ago.org/x820n5qp0rex762b7wuerk9.png" alt="" />
+          </section>
+          <section>
+            <img src="https://cdn.int64ago.org/qpebviaeczh96ee5klnmi.png" alt="" />
+          </section>
+          <section>
+            <h2>Text Format</h2>
+            <img src="https://cdn.int64ago.org/mxpp3rd3wuywntebokzkt9.PNG" alt="" />
+            <blockquote cite="https://github.com/WebAssembly/design/blob/master/TextFormat.md">
+              The text format is equivalent and isomorphic to the binary format.
+            </blockquote>
+          </section>
+          <section>
+            <h2>Binary Encoding</h2>
+            <img src="https://cdn.int64ago.org/9bvkbssnxrguyzttiysyvi.PNG" alt="" />
+          </section>
+        </section>
+        <section data-background="#4d7e65">
+          <h2><span style="color: #ff5c00;">C++</span> > <span style="color: #bb9950;">Emscripten</span> > <span style="color: #17ff2e;">asm.js</span></h2>
+          <h2><span style="color: #17ff2e;">asm.js</span> > <span style="color: #bb9950;">...</span> > <span style="color: #e94acf;">WebAssembly</span></h2>
+        </section>
+        <section data-background="#4d7e65">
+          <h2>Here comes Binaryen</h2>
+          <blockquote cite="https://github.com/WebAssembly/binaryen">
+            The Binaryen shell, which can load a WebAssembly module, <span style="color: #ff2c2d;">transform</span> it, <span style="color: #ff2c2d;">execute</span> it in an interpreter,
+  <span style="color: #ff2c2d;">print</span> it, etc.
+          </blockquote>
+          <p>
+            Tool pack: asm2wasm / wasm2asm / s2wasm / wasm.js
+          </p>
+        </section>
+        <section data-transition="slide" data-background="#b5533c" data-background-transition="zoom">
+          <h1>The End</h1>
+          <h1>Thank you :-)</h1>
+        </section>
+        <section>
+          <h2>References</h2>
+          <ol style="font-size: 15px;">
+            <li><a href="http://www.2ality.com/2015/06/web-assembly.html">http://www.2ality.com/2015/06/web-assembly.html</a></li>
+            <li><a href="https://medium.com/javascript-scene/what-is-webassembly-the-dawn-of-a-new-era-61256ec5a8f6#.5t42aln7o">https://medium.com/javascript-scene/what-is-webassembly-the-dawn-of-a-new-era-61256ec5a8f6#.5t42aln7o</a></li>
+            <li><a href="https://medium.com/javascript-scene/why-we-need-webassembly-an-interview-with-brendan-eich-7fb2a60b0723#.7d4tbmm9e">https://medium.com/javascript-scene/why-we-need-webassembly-an-interview-with-brendan-eich-7fb2a60b0723#.7d4tbmm9e</a></li>
+            <li><a href="http://www.2ality.com/2013/02/asm-js.html">http://www.2ality.com/2013/02/asm-js.html</a></li>
+            <li><a href="http://www.html5rocks.com/en/tutorials/developertools/sourcemaps/">http://www.html5rocks.com/en/tutorials/developertools/sourcemaps/</a></li>
+            <li><a href="http://kripken.github.io/mloc_emscripten_talk">http://kripken.github.io/mloc_emscripten_talk</a></li>
+            <li><a href="http://llvm.org/">http://llvm.org/</a></li>
+            <li><a href="http://asmjs.org/spec/latest/">http://asmjs.org/spec/latest/</a></li>
+            <li><a href="http://asmjs.org/faq.html">http://asmjs.org/faq.html</a></li>
+            <li><a href="http://www.2ality.com/2013/02/asm-js.html">http://www.2ality.com/2013/02/asm-js.html</a></li>
+            <li><a href="http://kripken.github.io/emscripten-site/">http://kripken.github.io/emscripten-site/</a></li>
+            <li><a href="https://www.sitepoint.com/understanding-asm-js/">https://www.sitepoint.com/understanding-asm-js/</a></li>
+            <li><a href="https://news.ycombinator.com/item?id=9071235">https://news.ycombinator.com/item?id=9071235</a></li>
+            <li><a href="http://mrale.ph/blog/2013/03/28/why-asmjs-bothers-me.html">http://mrale.ph/blog/2013/03/28/why-asmjs-bothers-me.html</a></li>
+            <li><a href="http://jlongster.com/Compiling-LLJS-to-asm.js,-Now-Available-">http://jlongster.com/Compiling-LLJS-to-asm.js,-Now-Available-</a></li>
+            <li><a href="https://github.com/petkaantonov/bluebird/wiki/Optimization-killers">https://github.com/petkaantonov/bluebird/wiki/Optimization-killers</a></li>
+            <li><a href="https://hacks.mozilla.org/2015/12/compiling-to-webassembly-its-happening/">https://hacks.mozilla.org/2015/12/compiling-to-webassembly-its-happening/</a></li>
+            <li><a href="https://kripken.github.io/talks/wasm.html#/">https://kripken.github.io/talks/wasm.html#/</a></li>
+            <li><a href="https://hacks.mozilla.org/2016/03/a-webassembly-milestone/">https://hacks.mozilla.org/2016/03/a-webassembly-milestone/</a></li>
+            <li><a href="https://webkit.org/status/#specification-webassembly">https://webkit.org/status/#specification-webassembly</a></li>
+            <li><a href="https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#module-structure">https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md#module-structure</a></li>
+            <li><a href="https://blog.mozilla.org/luke/2014/01/14/asm-js-aot-compilation-and-startup-performance/#jit">https://blog.mozilla.org/luke/2014/01/14/asm-js-aot-compilation-and-startup-performance/#jit</a></li>
+            <li><a href="https://en.wikipedia.org/wiki/Just-in-time_compilation">https://en.wikipedia.org/wiki/Just-in-time_compilation</a></li>
+            <li><a href="http://gotocon.com/dl/goto-cph-2015/slides/NickBray_WebAssembly.pdf">http://gotocon.com/dl/goto-cph-2015/slides/NickBray_WebAssembly.pdf</a></li>
+            <li><a href="https://cdn.int64ago.org/5d3l4mep2408zvvj66iggb9.pdf">https://cdn.int64ago.org/5d3l4mep2408zvvj66iggb9.pdf</a></li>
+            <li><a href="https://www.infoq.com/news/2015/06/webassembly-wasm">https://www.infoq.com/news/2015/06/webassembly-wasm</a></li>
+            <li><a href="http://128bitstudios.com/2013/08/11/a-quick-look-at-coffeescript-typescript-and-dart/">http://128bitstudios.com/2013/08/11/a-quick-look-at-coffeescript-typescript-and-dart/</a></li>
+          </ol>
+        </section>
+      </div>
+    </div>
 
-		// More info https://github.com/hakimel/reveal.js#configuration
-		Reveal.initialize({
-			history: true,
-			multiplex: {
-				secret: '14892535103431060496',
-				id: 'ee031ed452f0e8f1',
-				url: 'https://reveal.302.at'
-			},
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
 
-			// More info https://github.com/hakimel/reveal.js#dependencies
-			dependencies: [{
-					src: '//cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js',
-					async: true
-				},
-				{
-					src: 'plugin/multiplex/' + role + '.js',
-					async: true
-				},
-				{
-					src: 'plugin/markdown/marked.js'
-				},
-				{
-					src: 'plugin/markdown/markdown.js'
-				},
-				{
-					src: 'plugin/notes/notes.js',
-					async: true
-				},
-				{
-					src: 'plugin/highlight/highlight.js',
-					async: true,
-					callback: function () {
-						hljs.initHighlightingOnLoad();
-					}
-				}
-			]
-		});
-	</script>
-</body>
+    <script>
+      function getParameterByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, '\\$&');
+        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+          results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
+      }
+      var role = getParameterByName('role');
+      role = role === 'master' ? role : 'client';
 
+      // More info https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        history: true,
+        multiplex: {
+          secret: '14892557162026632591',
+          id: '3ae57b71e8bcf94c',
+          url: 'https://reveal.302.at'
+        },
+
+        // More info https://github.com/hakimel/reveal.js#dependencies
+        dependencies: [
+          { src: '//cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js', async: true },
+          { src: 'plugin/multiplex/' + role + '.js', async: true },
+          { src: 'plugin/markdown/marked.js' },
+          { src: 'plugin/markdown/markdown.js' },
+          { src: 'plugin/notes/notes.js', async: true },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+        ]
+      });
+    </script>
+  </body>
 </html>
